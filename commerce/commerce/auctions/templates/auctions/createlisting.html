@@ -1,0 +1,30 @@
+{% extends "auctions/layout.html" %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+
+    {% if list_save %}
+        <p><h3> Listing has been saved.</h3></p>
+    {% else %}
+        <form action = "{% url 'createlisting' %}" method="post">
+            <div class="form-group col-sm-7">
+                {% csrf_token %}
+                {% for field in form_listing %}
+                    {% if field.name == 'Category'%}
+                        <div class = "row">
+                            <div class = "col">
+                                {{field|as_crispy_field}}
+                            </div>
+                            <div class = "col" style="margin-top: 35px">
+                                <a href ="{% url 'addcat' %}">Add Category</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        {{field|as_crispy_field}}
+                    {% endif %}
+                {% endfor %}
+                <input type="submit" class="btn btn-primary">
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

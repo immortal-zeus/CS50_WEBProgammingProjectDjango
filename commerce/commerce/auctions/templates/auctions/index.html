@@ -1,0 +1,32 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+    <h2>Active Listings</h2>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Category</a>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    {% for cat in all_cat %}
+                        {% if cat is not None %}
+                            <a class="nav-item nav-link" href="{% url 'actlist' %}?idcat={{cat.id}}">{{ cat }}</a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </nav>
+        <br>
+        <div class="card-deck">
+            {% for list in all_list %}
+                <div class="card">
+                    <center><img class="card-img-top" src="{{ list.Imagelink }}" alt="Card image cap" style=" width : 50% " ></center>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ list.Title}}</h5>
+                        <p class="card-text">{{ list.Textdes }}</p>
+                        <b><p class="card-text" style="color: red"> {{ list.StartingBid }} Units </p> </b>
+                        <p class="card-text"><small class="text-muted">Updated : {{ list.time }} </small></p>
+                        <p class="card-text"><small class="text-muted">By {{ list.Luser }}</small></p>
+                        <a class="card-link" href="{% url 'listi' %}?idlisti={{list.id}}">Take me to this Listing</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+{% endblock %}

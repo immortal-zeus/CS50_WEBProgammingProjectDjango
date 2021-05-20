@@ -1,0 +1,84 @@
+{% extends "auctions/layout.html" %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+    <center>
+        <h1>{{ listing.Title }}</h1>
+        <div class = "card mx-5 px-0 py-0 border" style="width : 500px; height : 500px;">
+            <img  src="{{ listing.Imagelink }}" alt="Card image cap">
+        </div>
+    </center>
+    <p><h3>Description</h3></p>
+    <p> {{ listing.Textdes}} </p>
+    <br>
+    <h4> Staring Bid: </h4>
+    <p style="color: red"> {{listing.StartingBid }} Units</p>
+    <h4>Current Bid: </h4>
+    <p style="color: red"> {{listing.CurrentBid }} Units</p>
+    <p><small class="text-muted">Updated : {{ listing.time }} </small></p>
+    <p><small class="text-muted">By {{ listing.Luser }}</small></p>
+    <br>
+    {% for w in Watch %}
+        <Strong>Item already in WatchList.<a href="{% url 'removewatch' %}?idlisti={{listing.id}}"> Remove from WatchList. </a></Strong>
+    {% empty %}
+        <Strong><a href="{% url 'addwatch' %}?idlisti={{listing.id}}"> Add to WatchList.</a></Strong>
+    {% endfor %}
+    <br>
+    <br>
+    {% if listing.open %}
+        <H2> Make your Offer here!</H2>
+        {% if Flag %}
+            <h6 class = "text-muted"> Offer Should be Greater than Starting Bid and Current Bid</h6>
+        {% endif %}
+        <form action="{% url 'listi' %}?idlisti={{listing.id}}" method="post">
+            <div class="form-group col-sm-3">
+                {% csrf_token %}
+                {{ bid|crispy }}
+                 <input type="submit" class="btn btn-primary">
+            </div>
+        </form>
+    {% else %}
+        <h2> No more Bids!</h2>
+    {% endif %}
+
+
+    {% if listing.open %}
+        {% if listing.Luser == request.user %}
+            <h2> <I> To close the Listing : <a href="{% url 'closeL' %}?idlisti={{listing.id}}">CLOSE.</a></I></h2>
+        {% endif %}
+    {% else %}
+        {% if request.user == bideer %}
+            <h2><font color="red"> Congrats, this items is yours, you've won!</font></h2>
+        {% else %}
+            <h2> <font color="red">   Congrats {{ bideer }} ! You've Won Auction! </font></h2>
+        {% endif %}
+    {% endif %}
+
+
+
+
+    <h2> Comments </h2>
+    {% for comments in com %}
+        <div class = " col-sm-5" style="border:1px solid black;">
+            <p class="text-muted">{{ comments.Cuser|capfirst }}:</p>
+            <hr>
+            <p>{{ comments.Text }}</p>
+        </div>
+        <br>
+    {% empty %}
+        No comments yet.
+    {% endfor %}
+
+    <br>
+    <br>
+
+    <p> Write your Comment: </p>
+    <form action="{% url 'listi' %}?idlisti={{listing.id}}" method="post">
+        <div class="form-group col-sm-3">
+            {% csrf_token %}
+            {{ Com|crispy }}
+             <input type="submit" name="Comments" class="btn btn-primary">
+        </div>
+    </form>
+
+{% endblock %}
